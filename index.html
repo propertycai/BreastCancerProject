@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>乳腺癌辅助诊疗系统</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 主容器 -->
+  <div class="container">
+    <!-- 页面标题 -->
+    <header class="header">
+      <h1>乳腺癌辅助诊疗系统</h1>
+    </header>
+
+    <!-- 导航标签 -->
+    <nav class="tabs">
+      <button class="tab-button active" data-tab="intro">系统简介</button>
+      <button class="tab-button" data-tab="diagnosis">乳腺癌诊断预测</button>
+      <button class="tab-button" data-tab="survival">乳腺癌生存预测</button>
+      <button class="tab-button" data-tab="team">开发团队介绍</button>
+    </nav>
+
+    <!-- 内容区域 -->
+    <main class="content">
+      <!-- 系统简介 -->
+      <section id="intro" class="tab-content active">
+        <div class="intro-section">
+          <h2>欢迎使用乳腺癌辅助诊疗系统</h2>
+          <div class="intro-content">
+            <h3>系统功能</h3>
+            <p>本系统基于机器学习算法，为医疗工作者提供乳腺癌诊断和生存预测的辅助决策支持。</p>
+            
+            <h3>主要模块</h3>
+            <ul>
+              <li><strong>乳腺癌诊断预测：</strong>通过细胞学特征参数，预测肿瘤的良恶性</li>
+              <li><strong>乳腺癌生存预测：</strong>基于患者临床信息和分期数据，预测生存期</li>
+            </ul>
+
+            <h3>使用说明</h3>
+            <ol>
+              <li>选择相应的预测模块（诊断预测或生存预测）</li>
+              <li>填写所有必要的输入参数</li>
+              <li>点击"确认上传"按钮进行预测</li>
+              <li>查看预测结果，并可选择"保存结果"</li>
+            </ol>
+
+            <div class="warning-box">
+              <h4>⚠️ 重要提示</h4>
+              <p>本系统仅供医疗辅助参考，不能替代医生的专业诊断。所有诊疗决策应由专业医师综合判断后做出。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 乳腺癌诊断预测 -->
+      <section id="diagnosis" class="tab-content">
+        <h2>乳腺癌诊断预测</h2>
+        <p class="section-desc">请填写以下细胞学特征参数进行诊断预测</p>
+        
+        <form id="diagnosisForm" class="prediction-form">
+          <div class="form-grid">
+            <!-- 第一行 -->
+            <div class="form-group">
+              <label for="tumor-thickness">肿瘤厚度</label>
+              <input type="number" id="tumor-thickness" name="tumorThickness" 
+                     min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+
+            <div class="form-group">
+              <label for="cell-size-uniformity">细胞大小均匀性</label>
+              <input type="number" id="cell-size-uniformity" name="cellSizeUniformity" 
+                     min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+
+            <div class="form-group">
+              <label for="cell-shape-uniformity">细胞形状均匀性</label>
+              <input type="number" id="cell-shape-uniformity" name="cellShapeUniformity" 
+                     min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+
+            <div class="form-group">
+              <label for="marginal-adhesion">边缘粘附力</label>
+              <input type="number" id="marginal-adhesion" name="marginalAdhesion" 
+                     min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+
+            <div class="form-group">
+              <label for="epithelial-cell-size">单上皮细胞大小</label>
+              <input type="number" id="epithelial-cell-size" name="epithelialCellSize" 
+                     min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+
+            <!-- 第二行 -->
+            <div class="form-group">
+              <label for="bare-nuclei">裸核</label>
+              <input type="number" id="bare-nuclei" name="bareNuclei" 
+                     min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+
+            <div class="form-group">
+              <label for="bland-chromatin">染色质的颜色</label>
+              <input type="number" id="bland-chromatin" name="blandChromatin" 
+                     min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+
+            <div class="form-group">
+              <label for="normal-nucleoli">核仁正常情况</label>
+              <input type="number" id="normal-nucleoli" name="normalNucleoli" 
+                     min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+
+            <div class="form-group">
+              <label for="mitoses">有丝分裂情况</label>
+              <input type="number" id="mitoses" name="mitoses" 
+                     min="0" max="10" step="0.1" placeholder="0-10" required>
+            </div>
+          </div>
+
+          <!-- 诊断结果显示区域 -->
+          <div id="diagnosisResult" class="result-box" style="display: none;">
+            <h3>诊断预测结果</h3>
+            <div id="diagnosisResultContent"></div>
+          </div>
+
+          <!-- 按钮组 -->
+          <div class="button-group">
+            <button type="button" class="btn btn-primary" id="diagnosisUploadBtn">
+              确认上传
+            </button>
+            <button type="button" class="btn btn-secondary" id="diagnosisSaveBtn" disabled>
+              保存结果
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 乳腺癌生存预测 -->
+      <section id="survival" class="tab-content">
+        <h2>乳腺癌生存预测</h2>
+        <p class="section-desc">请填写以下患者信息和临床分期数据</p>
+        
+        <form id="survivalForm" class="prediction-form">
+          <div class="form-grid">
+            <!-- 第一行 -->
+            <div class="form-group">
+              <label for="age">年龄</label>
+              <input type="number" id="age" name="age" 
+                     min="0" max="120" placeholder="请输入年龄" required>
+            </div>
+
+            <div class="form-group">
+              <label for="race">种族</label>
+              <select id="race" name="race" required>
+                <option value="">请选择</option>
+                <option value="white">白种人</option>
+                <option value="black">黑种人</option>
+                <option value="asian">亚洲人</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="marital-status">婚姻状况</label>
+              <select id="marital-status" name="maritalStatus" required>
+                <option value="">请选择</option>
+                <option value="married">已婚</option>
+                <option value="single">未婚</option>
+                <option value="divorced">离异</option>
+                <option value="widowed">丧偶</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="family-income">家庭收入</label>
+              <input type="number" id="family-income" name="familyIncome" 
+                     min="0" placeholder="年收入（元）" required>
+            </div>
+
+            <div class="form-group">
+              <label for="residence">居住区域</label>
+              <select id="residence" name="residence" required>
+                <option value="">请选择</option>
+                <option value="urban">城市</option>
+                <option value="suburban">郊区</option>
+                <option value="rural">农村</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="ajcc-stage">AJCC分期</label>
+              <select id="ajcc-stage" name="ajccStage" required>
+                <option value="">请选择</option>
+                <option value="I">I期</option>
+                <option value="II">II期</option>
+                <option value="III">III期</option>
+                <option value="IV">IV期</option>
+              </select>
+            </div>
+
+            <!-- 第二行 -->
+            <div class="form-group">
+              <label for="t-stage">T分期</label>
+              <select id="t-stage" name="tStage" required>
+                <option value="">请选择</option>
+                <option value="T0">T0</option>
+                <option value="T1">T1</option>
+                <option value="T2">T2</option>
+                <option value="T3">T3</option>
+                <option value="T4">T4</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="n-stage">N分期</label>
+              <select id="n-stage" name="nStage" required>
+                <option value="">请选择</option>
+                <option value="N0">N0</option>
+                <option value="N1">N1</option>
+                <option value="N2">N2</option>
+                <option value="N3">N3</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="m-stage">M分期</label>
+              <select id="m-stage" name="mStage" required>
+                <option value="">请选择</option>
+                <option value="M0">M0</option>
+                <option value="M1">M1</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="surgery">手术</label>
+              <select id="surgery" name="surgery" required>
+                <option value="">请选择</option>
+                <option value="yes">是</option>
+                <option value="no">否</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="radiotherapy">放疗</label>
+              <select id="radiotherapy" name="radiotherapy" required>
+                <option value="">请选择</option>
+                <option value="yes">是</option>
+                <option value="no">否</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="chemotherapy">化疗</label>
+              <select id="chemotherapy" name="chemotherapy" required>
+                <option value="">请选择</option>
+                <option value="yes">是</option>
+                <option value="no">否</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 生存预测结果显示区域 -->
+          <div id="survivalResult" class="result-box" style="display: none;">
+            <h3>生存预测结果</h3>
+            <div id="survivalResultContent"></div>
+          </div>
+
+          <!-- 按钮组 -->
+          <div class="button-group">
+            <button type="button" class="btn btn-primary" id="survivalUploadBtn">
+              确认上传
+            </button>
+            <button type="button" class="btn btn-secondary" id="survivalSaveBtn" disabled>
+              保存结果
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 开发团队介绍 -->
+      <section id="team" class="tab-content">
+        <div class="team-section">
+          <h2>开发团队介绍</h2>
+          <div class="team-content">
+            <h3>关于我们</h3>
+            <p>致力于将先进的机器学习技术应用于临床辅助诊断。</p>
+            
+            <h3>团队成员</h3>
+            <div class="team-members">
+              <div class="member-card">
+                <h4>蔡岳江</h4>
+                <p class="member-role">前端 & 后端</p>
+                <p class="member-desc">负责系统架构设计和前后端开发</p>
+              </div>
+              <div class="member-card">
+                <h4>唐焱熙</h4>
+                <p class="member-role">整体规划和论文撰写</p>
+                <p class="member-desc">负责项目规划和学术论文撰写</p>
+              </div>
+              <div class="member-card">
+                <h4>薛雨鑫</h4>
+                <p class="member-role">模型算法设计</p>
+                <p class="member-desc">负责机器学习模型设计与优化</p>
+              </div>
+              <div class="member-card">
+                <h4>裴奕鑫</h4>
+                <p class="member-role">后勤</p>
+                <p class="member-desc">负责项目协调和后勤保障</p>
+              </div>
+              <div class="member-card">
+                <h4>刘艺轩</h4>
+                <p class="member-role">总稿整合</p>
+                <p class="member-desc">负责文档整合和质量把控</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 引入 JavaScript -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

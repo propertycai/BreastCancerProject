@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# TypeScript source (保留编译后的 JS)
+src/
+
+# Config files
+tsconfig.json
+package.json
+package-lock.json
+vite.config.ts
+
+# Documentation
+MOBILE_OPTIMIZATION.md
+TESTING_GUIDE.md
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Public folder (已复制到根目录)
+public/
