@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    /* 语言和环境 */
+    "target": "ES2015",                          // 编译目标设为 ES2015，支持 Promise 和 async/await
+    "lib": ["ES2015", "DOM", "DOM.Iterable"],    // 包含必要的库定义
+    "module": "ES2015",                          // 使用 ES2015 模块系统
+    "moduleResolution": "node",                  // 使用 Node.js 模块解析策略
+    
+    /* 输出 */
+    "outDir": "./js",                            // 输出到 js 目录
+    "sourceMap": true,                           // 生成 source map 文件
+    
+    /* 类型检查 */
+    "strict": true,                              // 启用所有严格类型检查选项
+    "noImplicitAny": true,                       // 禁止隐式 any 类型
+    "strictNullChecks": true,                    // 严格的 null 检查
+    "strictFunctionTypes": true,                 // 严格的函数类型检查
+    "strictBindCallApply": true,                 // 严格的 bind/call/apply 检查
+    "strictPropertyInitialization": true,        // 严格的属性初始化检查
+    "noImplicitThis": true,                      // 禁止 this 为隐式 any 类型
+    "alwaysStrict": true,                        // 总是以严格模式解析
+    
+    /* 额外检查 */
+    "noUnusedLocals": true,                      // 报告未使用的局部变量
+    "noUnusedParameters": true,                  // 报告未使用的参数
+    "noImplicitReturns": true,                   // 确保所有代码路径都有返回值
+    "noFallthroughCasesInSwitch": true,          // 防止 switch 语句贯穿
+    
+    /* 互操作性 */
+    "esModuleInterop": true,                     // 启用 ES 模块互操作性
+    "allowSyntheticDefaultImports": true,        // 允许合成默认导入
+    "forceConsistentCasingInFileNames": true,    // 强制文件名大小写一致
+    
+    /* 其他 */
+    "skipLibCheck": true,                        // 跳过库文件的类型检查
+    "resolveJsonModule": true                    // 允许导入 JSON 模块
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "js",
+    "**/*.spec.ts"
+  ]
+}

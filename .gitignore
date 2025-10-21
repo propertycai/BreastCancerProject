@@ -1,29 +1,18 @@
-# Development dependencies
+# 依赖
 node_modules/
 
-# Build artifacts
-dist/
-
-# Source files (only compiled JS is kept)
-src/
-*.ts
-
-# Configuration files
-tsconfig.json
-package*.json
-vite.config.ts
-
-# Documentation (development only)
-*.md
-!README.md
+# 编译产物
+js/
+*.js.map
 
 # IDE
 .vscode/
 .idea/
 
-# OS
+# 操作系统
 .DS_Store
 Thumbs.db
 
-# Logs
+# 日志
 *.log
+npm-debug.log*
