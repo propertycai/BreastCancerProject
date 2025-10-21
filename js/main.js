@@ -3,6 +3,15 @@
  *
  * 本文件实现了系统的核心交互逻辑和API接口调用
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 // ==================== 常量定义 ====================
 /**
  * API 端点配置
@@ -114,143 +123,150 @@ function getSurvivalInputFromForm() {
  * @param input - 诊断输入数据
  * @returns 诊断预测结果
  */
-async function callDiagnosisAPI(input) {
-    try {
-        // TODO: 替换为实际的后端 API 调用
-        const response = await fetch(API_ENDPOINTS.diagnosis, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(input)
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        return data;
-    }
-    catch (error) {
-        console.error('诊断预测 API 调用失败:', error);
-        // 模拟响应（开发阶段使用）
-        return {
-            code: 200,
-            message: '预测成功（模拟数据）',
-            success: true,
-            data: {
-                prediction: Math.random() > 0.5 ? 'benign' : 'malignant',
-                probability: Math.random(),
-                confidence: 0.85 + Math.random() * 0.1,
-                timestamp: new Date().toISOString(),
-                recommendation: '建议进一步检查确认诊断结果'
+function callDiagnosisAPI(input) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // TODO: 替换为实际的后端 API 调用
+            const response = yield fetch(API_ENDPOINTS.diagnosis, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(input)
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
-    }
+            const data = yield response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('诊断预测 API 调用失败:', error);
+            // 模拟响应（开发阶段使用）
+            return {
+                code: 200,
+                message: '预测成功（模拟数据）',
+                success: true,
+                data: {
+                    prediction: Math.random() > 0.5 ? 'benign' : 'malignant',
+                    probability: Math.random(),
+                    confidence: 0.85 + Math.random() * 0.1,
+                    timestamp: new Date().toISOString(),
+                    recommendation: '建议进一步检查确认诊断结果'
+                }
+            };
+        }
+    });
 }
 /**
  * 调用生存预测 API
  * @param input - 生存预测输入数据
  * @returns 生存预测结果
  */
-async function callSurvivalAPI(input) {
-    try {
-        // TODO: 替换为实际的后端 API 调用
-        const response = await fetch(API_ENDPOINTS.survival, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(input)
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        return data;
-    }
-    catch (error) {
-        console.error('生存预测 API 调用失败:', error);
-        // 模拟响应（开发阶段使用）
-        return {
-            code: 200,
-            message: '预测成功（模拟数据）',
-            success: true,
-            data: {
-                survivalMonths: Math.floor(Math.random() * 60) + 24,
-                survivalRate1Year: 0.8 + Math.random() * 0.15,
-                survivalRate3Year: 0.6 + Math.random() * 0.2,
-                survivalRate5Year: 0.4 + Math.random() * 0.25,
-                riskLevel: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)],
-                timestamp: new Date().toISOString(),
-                recommendation: '建议定期复查，保持良好生活习惯'
+function callSurvivalAPI(input) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // TODO: 替换为实际的后端 API 调用
+            const response = yield fetch(API_ENDPOINTS.survival, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(input)
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
-    }
+            const data = yield response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('生存预测 API 调用失败:', error);
+            // 模拟响应（开发阶段使用）
+            return {
+                code: 200,
+                message: '预测成功（模拟数据）',
+                success: true,
+                data: {
+                    survivalMonths: Math.floor(Math.random() * 60) + 24,
+                    survivalRate1Year: 0.8 + Math.random() * 0.15,
+                    survivalRate3Year: 0.6 + Math.random() * 0.2,
+                    survivalRate5Year: 0.4 + Math.random() * 0.25,
+                    riskLevel: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)],
+                    timestamp: new Date().toISOString(),
+                    recommendation: '建议定期复查，保持良好生活习惯'
+                }
+            };
+        }
+    });
 }
 /**
  * 保存预测记录到数据库
  * @param request - 保存请求数据
  * @returns 保存结果
  */
-async function saveRecordAPI(request) {
-    try {
-        // TODO: 替换为实际的后端 API 调用
-        const response = await fetch(API_ENDPOINTS.saveRecord, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(request)
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        return data;
-    }
-    catch (error) {
-        console.error('保存记录 API 调用失败:', error);
-        // 模拟响应（开发阶段使用）
-        return {
-            code: 200,
-            message: '保存成功（模拟数据）',
-            success: true,
-            data: {
-                recordId: 'REC' + Date.now(),
-                savedAt: new Date().toISOString()
+function saveRecordAPI(request) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // TODO: 替换为实际的后端 API 调用
+            const response = yield fetch(API_ENDPOINTS.saveRecord, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(request)
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
-    }
+            const data = yield response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('保存记录 API 调用失败:', error);
+            // 模拟响应（开发阶段使用）
+            return {
+                code: 200,
+                message: '保存成功（模拟数据）',
+                success: true,
+                data: {
+                    recordId: 'REC' + Date.now(),
+                    savedAt: new Date().toISOString()
+                }
+            };
+        }
+    });
 }
 // ==================== 诊断预测功能 ====================
 /**
  * 处理诊断预测上传
  */
-async function handleDiagnosisUpload() {
-    const form = document.getElementById('diagnosisForm');
-    const uploadBtn = document.getElementById('diagnosisUploadBtn');
-    const saveBtn = document.getElementById('diagnosisSaveBtn');
-    const resultBox = document.getElementById('diagnosisResult');
-    const resultContent = document.getElementById('diagnosisResultContent');
-    // 验证表单
-    if (!validateForm(form)) {
-        return;
-    }
-    // 获取输入数据
-    const input = getDiagnosisInputFromForm();
-    // 显示加载状态
-    showLoading(uploadBtn, '分析中...');
-    try {
-        // 调用 API
-        const response = await callDiagnosisAPI(input);
-        if (response.success && response.data) {
-            // 保存结果
-            currentDiagnosisResult = response.data;
-            // 显示结果
-            const result = response.data;
-            const predictionText = result.prediction === 'benign' ? '良性' : '恶性';
-            const predictionColor = result.prediction === 'benign' ? '#52c41a' : '#f5222d';
-            resultContent.innerHTML = `
+function handleDiagnosisUpload() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const form = document.getElementById('diagnosisForm');
+        const uploadBtn = document.getElementById('diagnosisUploadBtn');
+        const saveBtn = document.getElementById('diagnosisSaveBtn');
+        const resultBox = document.getElementById('diagnosisResult');
+        const resultContent = document.getElementById('diagnosisResultContent');
+        // 验证表单
+        if (!validateForm(form)) {
+            return;
+        }
+        // 获取输入数据
+        const input = getDiagnosisInputFromForm();
+        // 显示加载状态
+        showLoading(uploadBtn, '分析中...');
+        try {
+            // 调用 API
+            const response = yield callDiagnosisAPI(input);
+            if (response.success && response.data) {
+                // 保存结果
+                currentDiagnosisResult = response.data;
+                // 显示结果
+                const result = response.data;
+                const predictionText = result.prediction === 'benign' ? '良性' : '恶性';
+                const predictionColor = result.prediction === 'benign' ? '#52c41a' : '#f5222d';
+                resultContent.innerHTML = `
         <div style="margin-bottom: 16px;">
           <strong style="font-size: 18px; color: ${predictionColor};">
             预测结果：${predictionText}
@@ -271,92 +287,96 @@ async function handleDiagnosisUpload() {
           </div>
         ` : ''}
       `;
-            resultBox.style.display = 'block';
-            saveBtn.disabled = false;
-            showSuccess('诊断预测完成！');
+                resultBox.style.display = 'block';
+                saveBtn.disabled = false;
+                showSuccess('诊断预测完成！');
+            }
+            else {
+                showError(response.message || '预测失败，请重试');
+            }
         }
-        else {
-            showError(response.message || '预测失败，请重试');
+        catch (error) {
+            console.error('诊断预测错误:', error);
+            showError('系统错误，请稍后重试');
         }
-    }
-    catch (error) {
-        console.error('诊断预测错误:', error);
-        showError('系统错误，请稍后重试');
-    }
-    finally {
-        hideLoading(uploadBtn, '确认上传');
-    }
+        finally {
+            hideLoading(uploadBtn, '确认上传');
+        }
+    });
 }
 /**
  * 保存诊断预测结果
  */
-async function handleDiagnosisSave() {
-    if (!currentDiagnosisResult) {
-        showError('没有可保存的预测结果');
-        return;
-    }
-    const saveBtn = document.getElementById('diagnosisSaveBtn');
-    const input = getDiagnosisInputFromForm();
-    showLoading(saveBtn, '保存中...');
-    try {
-        const request = {
-            type: 'diagnosis',
-            input: input,
-            result: currentDiagnosisResult
-        };
-        const response = await saveRecordAPI(request);
-        if (response.success && response.data) {
-            showSuccess(`保存成功！记录ID: ${response.data.recordId}`);
+function handleDiagnosisSave() {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!currentDiagnosisResult) {
+            showError('没有可保存的预测结果');
+            return;
         }
-        else {
-            showError(response.message || '保存失败，请重试');
+        const saveBtn = document.getElementById('diagnosisSaveBtn');
+        const input = getDiagnosisInputFromForm();
+        showLoading(saveBtn, '保存中...');
+        try {
+            const request = {
+                type: 'diagnosis',
+                input: input,
+                result: currentDiagnosisResult
+            };
+            const response = yield saveRecordAPI(request);
+            if (response.success && response.data) {
+                showSuccess(`保存成功！记录ID: ${response.data.recordId}`);
+            }
+            else {
+                showError(response.message || '保存失败，请重试');
+            }
         }
-    }
-    catch (error) {
-        console.error('保存记录错误:', error);
-        showError('保存失败，请稍后重试');
-    }
-    finally {
-        hideLoading(saveBtn, '保存结果');
-    }
+        catch (error) {
+            console.error('保存记录错误:', error);
+            showError('保存失败，请稍后重试');
+        }
+        finally {
+            hideLoading(saveBtn, '保存结果');
+        }
+    });
 }
 // ==================== 生存预测功能 ====================
 /**
  * 处理生存预测上传
  */
-async function handleSurvivalUpload() {
-    const form = document.getElementById('survivalForm');
-    const uploadBtn = document.getElementById('survivalUploadBtn');
-    const saveBtn = document.getElementById('survivalSaveBtn');
-    const resultBox = document.getElementById('survivalResult');
-    const resultContent = document.getElementById('survivalResultContent');
-    // 验证表单
-    if (!validateForm(form)) {
-        return;
-    }
-    // 获取输入数据
-    const input = getSurvivalInputFromForm();
-    // 显示加载状态
-    showLoading(uploadBtn, '分析中...');
-    try {
-        // 调用 API
-        const response = await callSurvivalAPI(input);
-        if (response.success && response.data) {
-            // 保存结果
-            currentSurvivalResult = response.data;
-            // 显示结果
-            const result = response.data;
-            const riskLevelText = {
-                low: '低风险',
-                medium: '中风险',
-                high: '高风险'
-            }[result.riskLevel];
-            const riskLevelColor = {
-                low: '#52c41a',
-                medium: '#faad14',
-                high: '#f5222d'
-            }[result.riskLevel];
-            resultContent.innerHTML = `
+function handleSurvivalUpload() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const form = document.getElementById('survivalForm');
+        const uploadBtn = document.getElementById('survivalUploadBtn');
+        const saveBtn = document.getElementById('survivalSaveBtn');
+        const resultBox = document.getElementById('survivalResult');
+        const resultContent = document.getElementById('survivalResultContent');
+        // 验证表单
+        if (!validateForm(form)) {
+            return;
+        }
+        // 获取输入数据
+        const input = getSurvivalInputFromForm();
+        // 显示加载状态
+        showLoading(uploadBtn, '分析中...');
+        try {
+            // 调用 API
+            const response = yield callSurvivalAPI(input);
+            if (response.success && response.data) {
+                // 保存结果
+                currentSurvivalResult = response.data;
+                // 显示结果
+                const result = response.data;
+                const riskLevelText = {
+                    low: '低风险',
+                    medium: '中风险',
+                    high: '高风险'
+                }[result.riskLevel];
+                const riskLevelColor = {
+                    low: '#52c41a',
+                    medium: '#faad14',
+                    high: '#f5222d'
+                }[result.riskLevel];
+                resultContent.innerHTML = `
         <div style="margin-bottom: 16px;">
           <strong style="font-size: 18px; color: ${riskLevelColor};">
             风险等级：${riskLevelText}
@@ -383,54 +403,57 @@ async function handleSurvivalUpload() {
           </div>
         ` : ''}
       `;
-            resultBox.style.display = 'block';
-            saveBtn.disabled = false;
-            showSuccess('生存预测完成！');
+                resultBox.style.display = 'block';
+                saveBtn.disabled = false;
+                showSuccess('生存预测完成！');
+            }
+            else {
+                showError(response.message || '预测失败，请重试');
+            }
         }
-        else {
-            showError(response.message || '预测失败，请重试');
+        catch (error) {
+            console.error('生存预测错误:', error);
+            showError('系统错误，请稍后重试');
         }
-    }
-    catch (error) {
-        console.error('生存预测错误:', error);
-        showError('系统错误，请稍后重试');
-    }
-    finally {
-        hideLoading(uploadBtn, '确认上传');
-    }
+        finally {
+            hideLoading(uploadBtn, '确认上传');
+        }
+    });
 }
 /**
  * 保存生存预测结果
  */
-async function handleSurvivalSave() {
-    if (!currentSurvivalResult) {
-        showError('没有可保存的预测结果');
-        return;
-    }
-    const saveBtn = document.getElementById('survivalSaveBtn');
-    const input = getSurvivalInputFromForm();
-    showLoading(saveBtn, '保存中...');
-    try {
-        const request = {
-            type: 'survival',
-            input: input,
-            result: currentSurvivalResult
-        };
-        const response = await saveRecordAPI(request);
-        if (response.success && response.data) {
-            showSuccess(`保存成功！记录ID: ${response.data.recordId}`);
+function handleSurvivalSave() {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!currentSurvivalResult) {
+            showError('没有可保存的预测结果');
+            return;
         }
-        else {
-            showError(response.message || '保存失败，请重试');
+        const saveBtn = document.getElementById('survivalSaveBtn');
+        const input = getSurvivalInputFromForm();
+        showLoading(saveBtn, '保存中...');
+        try {
+            const request = {
+                type: 'survival',
+                input: input,
+                result: currentSurvivalResult
+            };
+            const response = yield saveRecordAPI(request);
+            if (response.success && response.data) {
+                showSuccess(`保存成功！记录ID: ${response.data.recordId}`);
+            }
+            else {
+                showError(response.message || '保存失败，请重试');
+            }
         }
-    }
-    catch (error) {
-        console.error('保存记录错误:', error);
-        showError('保存失败，请稍后重试');
-    }
-    finally {
-        hideLoading(saveBtn, '保存结果');
-    }
+        catch (error) {
+            console.error('保存记录错误:', error);
+            showError('保存失败，请稍后重试');
+        }
+        finally {
+            hideLoading(saveBtn, '保存结果');
+        }
+    });
 }
 // ==================== 标签页切换 ====================
 /**
