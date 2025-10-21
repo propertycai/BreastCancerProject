@@ -1,21 +1,21 @@
-# Node modules
+# Development dependencies
 node_modules/
 
-# Build output
+# Build artifacts
 dist/
 
-# TypeScript source (保留编译后的 JS)
+# Source files (only compiled JS is kept)
 src/
+*.ts
 
-# Config files
+# Configuration files
 tsconfig.json
-package.json
-package-lock.json
+package*.json
 vite.config.ts
 
-# Documentation
-MOBILE_OPTIMIZATION.md
-TESTING_GUIDE.md
+# Documentation (development only)
+*.md
+!README.md
 
 # IDE
 .vscode/
@@ -27,7 +27,3 @@ Thumbs.db
 
 # Logs
 *.log
-npm-debug.log*
-
-# Public folder (已复制到根目录)
-public/
