@@ -3,12 +3,11 @@
     /* 语言和环境 */
     "target": "ES2015",                          // 编译目标设为 ES2015，支持 Promise 和 async/await
     "lib": ["ES2015", "DOM", "DOM.Iterable"],    // 包含必要的库定义
-    "module": "ES2015",                          // 使用 ES2015 模块系统
-    "moduleResolution": "node",                  // 使用 Node.js 模块解析策略
+    // "module": "None",                         // 不使用模块系统
     
     /* 输出 */
     "outDir": "./js",                            // 输出到 js 目录
-    "sourceMap": true,                           // 生成 source map 文件
+    "sourceMap": false,                          // 不生成 source map 文件
     
     /* 类型检查 */
     "strict": true,                              // 启用所有严格类型检查选项
@@ -32,8 +31,7 @@
     "forceConsistentCasingInFileNames": true,    // 强制文件名大小写一致
     
     /* 其他 */
-    "skipLibCheck": true,                        // 跳过库文件的类型检查
-    "resolveJsonModule": true                    // 允许导入 JSON 模块
+    "skipLibCheck": true                         // 跳过库文件的类型检查
   },
   "include": [
     "src/**/*"

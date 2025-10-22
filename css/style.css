@@ -41,6 +41,46 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 粒子背景画布 */
+#particles-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(78, 205, 196, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(255, 195, 113, 0.3) 0%, transparent 50%);
+  animation: gradientShift 15s ease infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1) rotate(180deg);
+  }
 }
 
 /* ==================== 主容器 ==================== */
@@ -51,6 +91,18 @@ body {
   border-radius: 16px;
   box-shadow: var(--shadow-lg);
   overflow: hidden;
+  position: relative;
+  z-index: 1;
+  animation: containerFloat 6s ease-in-out infinite;
+}
+
+@keyframes containerFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* ==================== 页面头部 ==================== */
@@ -59,6 +111,33 @@ body {
   padding: 30px 40px;
   text-align: center;
   color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  animation: headerShine 3s linear infinite;
+}
+
+@keyframes headerShine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
 }
 
 .header h1 {
@@ -66,6 +145,25 @@ body {
   font-weight: 600;
   letter-spacing: 2px;
   margin: 0;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
+               0 0 40px rgba(255, 255, 255, 0.3),
+               0 0 60px rgba(255, 255, 255, 0.2);
+  animation: titlePulse 2s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
+                 0 0 40px rgba(255, 255, 255, 0.3),
+                 0 0 60px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
+                 0 0 60px rgba(255, 255, 255, 0.6),
+                 0 0 90px rgba(255, 255, 255, 0.4);
+  }
 }
 
 /* ==================== 导航标签 ==================== */
@@ -92,11 +190,29 @@ body {
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-button::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: all 0.4s ease;
+  transform: translateX(-50%);
 }
 
 .tab-button:hover {
   background: var(--bg-hover);
   color: var(--primary-color);
+}
+
+.tab-button:hover::before {
+  width: 80%;
 }
 
 .tab-button:active {
@@ -105,8 +221,34 @@ body {
 
 .tab-button.active {
   color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
+  border-bottom-color: transparent;
   background: var(--bg-primary);
+  animation: tabGlow 1.5s ease-in-out infinite;
+}
+
+.tab-button.active::before {
+  width: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+  background-size: 200% 100%;
+  animation: gradientSlide 2s linear infinite;
+}
+
+@keyframes tabGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+  }
+}
+
+@keyframes gradientSlide {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 0%;
+  }
 }
 
 /* ==================== 内容区域 ==================== */
@@ -214,16 +356,42 @@ body {
   padding: 24px;
   border-radius: 12px;
   box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.member-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%) translateY(-100%);
+  transition: transform 0.6s;
 }
 
 .member-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-8px) rotateY(5deg) rotateX(5deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2),
+              0 0 30px rgba(102, 126, 234, 0.3);
+}
+
+.member-card:hover::before {
+  transform: translateX(100%) translateY(100%);
 }
 
 
@@ -308,7 +476,23 @@ body {
 .form-group select:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(91, 124, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(91, 124, 255, 0.1),
+              0 0 20px rgba(91, 124, 255, 0.4),
+              0 0 40px rgba(91, 124, 255, 0.2);
+  animation: neonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(91, 124, 255, 0.1),
+                0 0 10px rgba(91, 124, 255, 0.3),
+                0 0 20px rgba(91, 124, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(91, 124, 255, 0.2),
+                0 0 20px rgba(91, 124, 255, 0.6),
+                0 0 40px rgba(91, 124, 255, 0.4);
+  }
 }
 
 .form-group input::placeholder {
@@ -384,11 +568,45 @@ body {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   user-select: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:active:not(:disabled)::before {
+  width: 300px;
+  height: 300px;
 }
 
 .btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md),
+              0 0 20px rgba(0, 0, 0, 0.2);
+  animation: btnPulse 1s ease-in-out infinite;
+}
+
+@keyframes btnPulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12),
+                0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
+                0 0 30px rgba(0, 0, 0, 0.2);
+  }
 }
 
 .btn:active:not(:disabled) {
@@ -402,6 +620,8 @@ body {
 
 .btn-primary:hover:not(:disabled) {
   background: linear-gradient(135deg, #73d13d 0%, #95de64 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12),
+              0 0 30px rgba(82, 196, 26, 0.5);
 }
 
 .btn-secondary {
@@ -410,12 +630,148 @@ body {
 
 .btn-secondary:hover:not(:disabled) {
   background: linear-gradient(135deg, #40a9ff 0%, #69c0ff 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12),
+              0 0 30px rgba(24, 144, 255, 0.5);
 }
 
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+  animation: none;
+}
+
+/* ==================== 加载按钮动画 ==================== */
+.btn.loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: btnSpinner 0.8s linear infinite;
+}
+
+@keyframes btnSpinner {
+  to { transform: rotate(360deg); }
+}
+
+/* ==================== 数字递增动画样式 ==================== */
+.animated-number {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+/* ==================== 自定义滚动条 ==================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* ==================== 输入框闪烁效果 ==================== */
+.form-group input.highlight,
+.form-group select.highlight {
+  animation: inputHighlight 0.5s ease;
+}
+
+@keyframes inputHighlight {
+  0%, 100% {
+    background: var(--bg-primary);
+  }
+  50% {
+    background: rgba(102, 126, 234, 0.1);
+  }
+}
+
+/* ==================== 结果框增强动画 ==================== */
+.result-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.result-box::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    #667eea, #764ba2, #667eea, #764ba2);
+  background-size: 400% 400%;
+  border-radius: 12px;
+  z-index: -1;
+  animation: borderGradient 4s ease infinite;
+}
+
+@keyframes borderGradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ==================== 卡片点击涟漪效果 ==================== */
+.member-card {
+  cursor: pointer;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(0);
+  animation: rippleEffect 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ==================== 警告框动画增强 ==================== */
+.warning-box {
+  animation: warningPulse 2s ease-in-out infinite;
+}
+
+@keyframes warningPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(250, 173, 20, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(250, 173, 20, 0.3);
+  }
 }
 
 /* ==================== 响应式设计 ==================== */

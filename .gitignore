@@ -1,18 +1,17 @@
 # 依赖
 node_modules/
+package-lock.json
 
-# 编译产物
-js/
-*.js.map
+# 编译输出
+js/bundle.js
+js/app.js
+js/effects.js
+js/main.js
+js/types.js
 
-# IDE
-.vscode/
-.idea/
-
-# 操作系统
+# 开发工具
 .DS_Store
-Thumbs.db
-
-# 日志
 *.log
-npm-debug.log*
+
+# TypeScript 缓存
+*.tsbuildinfo

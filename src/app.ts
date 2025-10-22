@@ -1,24 +1,138 @@
 /**
- * 乳腺癌辅助诊疗系统 - 主程序
+ * 乳腺癌辅助诊疗系统 - 完整应用程序
  * 
- * 本文件实现了系统的核心交互逻辑和API接口调用
+ * 本文件包含所有类型定义和核心交互逻辑
  */
 
-import type {
-  DiagnosisInput,
-  DiagnosisResult,
-  SurvivalInput,
-  SurvivalResult,
-  ApiResponse,
-  SaveRecordRequest,
-  SaveRecordResponse
-} from './types.js'
+// ==================== 类型定义 ====================
 
-import { 
-  initEffects, 
-  animateNumber, 
-  LoadingSpinner
-} from './effects.js'
+/**
+ * 诊断预测输入数据
+ */
+interface DiagnosisInput {
+  /** 肿瘤厚度 (0-10) */
+  tumorThickness: number
+  /** 细胞大小均匀性 (0-10) */
+  cellSizeUniformity: number
+  /** 细胞形状均匀性 (0-10) */
+  cellShapeUniformity: number
+  /** 边缘粘附力 (0-10) */
+  marginalAdhesion: number
+  /** 单上皮细胞大小 (0-10) */
+  epithelialCellSize: number
+  /** 裸核 (0-10) */
+  bareNuclei: number
+  /** 染色质的颜色 (0-10) */
+  blandChromatin: number
+  /** 核仁正常情况 (0-10) */
+  normalNucleoli: number
+  /** 有丝分裂情况 (0-10) */
+  mitoses: number
+}
+
+/**
+ * 诊断预测结果
+ */
+interface DiagnosisResult {
+  /** 预测类别：'benign' 良性 | 'malignant' 恶性 */
+  prediction: 'benign' | 'malignant'
+  /** 预测概率 (0-1) */
+  probability: number
+  /** 置信度 (0-1) */
+  confidence: number
+  /** 预测时间戳 */
+  timestamp: string
+  /** 建议 */
+  recommendation?: string
+}
+
+/**
+ * 生存预测输入数据
+ */
+interface SurvivalInput {
+  /** 年龄 */
+  age: number
+  /** 种族 */
+  race: 'white' | 'black' | 'asian' | 'other'
+  /** 婚姻状况 */
+  maritalStatus: 'married' | 'single' | 'divorced' | 'widowed'
+  /** 家庭收入 */
+  familyIncome: number
+  /** 居住区域 */
+  residence: 'urban' | 'suburban' | 'rural'
+  /** AJCC分期 */
+  ajccStage: 'I' | 'II' | 'III' | 'IV'
+  /** T分期 */
+  tStage: 'T0' | 'T1' | 'T2' | 'T3' | 'T4'
+  /** N分期 */
+  nStage: 'N0' | 'N1' | 'N2' | 'N3'
+  /** M分期 */
+  mStage: 'M0' | 'M1'
+  /** 是否手术 */
+  surgery: 'yes' | 'no'
+  /** 是否放疗 */
+  radiotherapy: 'yes' | 'no'
+  /** 是否化疗 */
+  chemotherapy: 'yes' | 'no'
+}
+
+/**
+ * 生存预测结果
+ */
+interface SurvivalResult {
+  /** 预测生存时间（月） */
+  survivalMonths: number
+  /** 1年生存率 (0-1) */
+  survivalRate1Year: number
+  /** 3年生存率 (0-1) */
+  survivalRate3Year: number
+  /** 5年生存率 (0-1) */
+  survivalRate5Year: number
+  /** 风险等级：'low' | 'medium' | 'high' */
+  riskLevel: 'low' | 'medium' | 'high'
+  /** 预测时间戳 */
+  timestamp: string
+  /** 建议 */
+  recommendation?: string
+}
+
+/**
+ * 通用 API 响应结构
+ */
+interface ApiResponse<T> {
+  /** 状态码 */
+  code: number
+  /** 响应消息 */
+  message: string
+  /** 响应数据 */
+  data: T | null
+  /** 是否成功 */
+  success: boolean
+}
+
+/**
+ * 保存记录的请求数据
+ */
+interface SaveRecordRequest {
+  /** 预测类型 */
+  type: 'diagnosis' | 'survival'
+  /** 输入数据 */
+  input: DiagnosisInput | SurvivalInput
+  /** 预测结果 */
+  result: DiagnosisResult | SurvivalResult
+  /** 备注 */
+  note?: string
+}
+
+/**
+ * 保存记录的响应数据
+ */
+interface SaveRecordResponse {
+  /** 记录ID */
+  recordId: string
+  /** 保存时间 */
+  savedAt: string
+}
 
 // ==================== 常量定义 ====================
 
@@ -50,23 +164,11 @@ let currentSurvivalResult: SurvivalResult | null = null
 // ==================== 工具函数 ====================
 
 /**
- * 加载动画实例
- */
-let loadingSpinner: LoadingSpinner | null = null
-
-/**
  * 显示加载状态
  */
 function showLoading(button: HTMLButtonElement, text: string = '处理中...') {
   button.disabled = true
   button.textContent = text
-  button.classList.add('loading')
-  
-  // 显示全屏加载动画
-  if (!loadingSpinner) {
-    loadingSpinner = new LoadingSpinner()
-  }
-  loadingSpinner.show()
 }
 
 /**
@@ -75,12 +177,6 @@ function showLoading(button: HTMLButtonElement, text: string = '处理中...') {
 function hideLoading(button: HTMLButtonElement, text: string) {
   button.disabled = false
   button.textContent = text
-  button.classList.remove('loading')
-  
-  // 隐藏全屏加载动画
-  if (loadingSpinner) {
-    loadingSpinner.hide()
-  }
 }
 
 /**
@@ -325,10 +421,10 @@ async function handleDiagnosisUpload() {
           </strong>
         </div>
         <div style="margin-bottom: 12px;">
-          <strong>概率：</strong><span class="animated-number" data-value="${(result.probability * 100).toFixed(2)}">0</span>%
+          <strong>概率：</strong>${(result.probability * 100).toFixed(2)}%
         </div>
         <div style="margin-bottom: 12px;">
-          <strong>置信度：</strong><span class="animated-number" data-value="${(result.confidence * 100).toFixed(2)}">0</span>%
+          <strong>置信度：</strong>${(result.confidence * 100).toFixed(2)}%
         </div>
         <div style="margin-bottom: 12px;">
           <strong>预测时间：</strong>${new Date(result.timestamp).toLocaleString('zh-CN')}
@@ -341,17 +437,6 @@ async function handleDiagnosisUpload() {
       `
 
       resultBox.style.display = 'block'
-      
-      // 数字递增动画
-      setTimeout(() => {
-        const numberElements = resultContent.querySelectorAll('.animated-number')
-        numberElements.forEach(el => {
-          const element = el as HTMLElement
-          const targetValue = parseFloat(element.getAttribute('data-value') || '0')
-          animateNumber(element, 0, targetValue, 1500, 2)
-        })
-      }, 100)
-      
       saveBtn.disabled = false
 
       showSuccess('诊断预测完成！')
@@ -453,16 +538,16 @@ async function handleSurvivalUpload() {
           </strong>
         </div>
         <div style="margin-bottom: 12px;">
-          <strong>预测生存时间：</strong><span class="animated-number" data-value="${result.survivalMonths}">0</span> 个月
+          <strong>预测生存时间：</strong>${result.survivalMonths} 个月
         </div>
         <div style="margin-bottom: 12px;">
-          <strong>1年生存率：</strong><span class="animated-number" data-value="${(result.survivalRate1Year * 100).toFixed(2)}">0</span>%
+          <strong>1年生存率：</strong>${(result.survivalRate1Year * 100).toFixed(2)}%
         </div>
         <div style="margin-bottom: 12px;">
-          <strong>3年生存率：</strong><span class="animated-number" data-value="${(result.survivalRate3Year * 100).toFixed(2)}">0</span>%
+          <strong>3年生存率：</strong>${(result.survivalRate3Year * 100).toFixed(2)}%
         </div>
         <div style="margin-bottom: 12px;">
-          <strong>5年生存率：</strong><span class="animated-number" data-value="${(result.survivalRate5Year * 100).toFixed(2)}">0</span>%
+          <strong>5年生存率：</strong>${(result.survivalRate5Year * 100).toFixed(2)}%
         </div>
         <div style="margin-bottom: 12px;">
           <strong>预测时间：</strong>${new Date(result.timestamp).toLocaleString('zh-CN')}
@@ -475,18 +560,6 @@ async function handleSurvivalUpload() {
       `
 
       resultBox.style.display = 'block'
-      
-      // 数字递增动画
-      setTimeout(() => {
-        const numberElements = resultContent.querySelectorAll('.animated-number')
-        numberElements.forEach((el, index) => {
-          const element = el as HTMLElement
-          const targetValue = parseFloat(element.getAttribute('data-value') || '0')
-          const decimals = index === 0 ? 0 : 2  // 第一个是月份，整数；其他是百分比，保留2位
-          animateNumber(element, 0, targetValue, 1500, decimals)
-        })
-      }, 100)
-      
       saveBtn.disabled = false
 
       showSuccess('生存预测完成！')
@@ -572,9 +645,6 @@ function initializeTabs() {
 function init() {
   console.log('🏥 乳腺癌辅助诊疗系统已启动')
 
-  // 初始化视觉特效
-  initEffects()
-
   // 初始化标签页
   initializeTabs()
 
@@ -612,10 +682,4 @@ if (document.readyState === 'loading') {
   init()
 }
 
-// 导出供其他模块使用（可选）
-export {
-  callDiagnosisAPI,
-  callSurvivalAPI,
-  saveRecordAPI
-}
 
