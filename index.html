@@ -17,16 +17,18 @@
       <h1>乳腺癌辅助诊疗系统</h1>
     </header>
 
-    <!-- 导航标签 -->
-    <nav class="tabs">
-      <button class="tab-button active" data-tab="intro">系统简介</button>
-      <button class="tab-button" data-tab="diagnosis">乳腺癌诊断预测</button>
-      <button class="tab-button" data-tab="survival">乳腺癌生存预测</button>
-      <button class="tab-button" data-tab="team">开发团队介绍</button>
-    </nav>
+    <!-- 主体区域：左侧导航 + 右侧内容 -->
+    <div class="main-wrapper">
+      <!-- 左侧导航标签 -->
+      <nav class="tabs">
+        <button class="tab-button active" data-tab="intro">系统简介</button>
+        <button class="tab-button" data-tab="diagnosis">乳腺癌诊断预测</button>
+        <button class="tab-button" data-tab="survival">乳腺癌生存预测</button>
+        <button class="tab-button" data-tab="team">开发团队介绍</button>
+      </nav>
 
-    <!-- 内容区域 -->
-    <main class="content">
+      <!-- 右侧内容区域 -->
+      <main class="content">
       <!-- 系统简介 -->
       <section id="intro" class="tab-content active">
         <div class="intro-section">
@@ -321,7 +323,8 @@
           </div>
         </div>
       </section>
-    </main>
+      </main>
+    </div>
   </div>
 
   <!-- 引入 JavaScript -->
