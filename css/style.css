@@ -1490,17 +1490,22 @@ body::before {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--btn-green) 0%, #73d13d 100%);
+  background: linear-gradient(135deg, #389e0d 0%, #52c41a 100%);
+  color: #ffffff;
   box-shadow: 
     0 8px 20px rgba(82, 196, 26, 0.4),
     0 4px 8px rgba(82, 196, 26, 0.3),
     0 0 30px rgba(82, 196, 26, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #73d13d 0%, #95de64 100%);
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  color: #ffffff;
   box-shadow: 
     0 12px 32px rgba(82, 196, 26, 0.5),
     0 8px 16px rgba(82, 196, 26, 0.4),
@@ -1509,22 +1514,28 @@ body::before {
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
     inset 0 -2px 0 rgba(0, 0, 0, 0.15);
   text-shadow: 
-    0 0 15px rgba(255, 255, 255, 0.6),
-    0 2px 4px rgba(0, 0, 0, 0.2);
+    0 0 15px rgba(255, 255, 255, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, var(--btn-blue) 0%, #40a9ff 100%);
+  background: linear-gradient(135deg, #0958d9 0%, #1890ff 100%);
+  color: #ffffff;
   box-shadow: 
     0 8px 20px rgba(24, 144, 255, 0.4),
     0 4px 8px rgba(24, 144, 255, 0.3),
     0 0 30px rgba(24, 144, 255, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #40a9ff 0%, #69c0ff 100%);
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+  color: #ffffff;
   box-shadow: 
     0 12px 32px rgba(24, 144, 255, 0.5),
     0 8px 16px rgba(24, 144, 255, 0.4),
@@ -1533,8 +1544,9 @@ body::before {
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
     inset 0 -2px 0 rgba(0, 0, 0, 0.15);
   text-shadow: 
-    0 0 15px rgba(255, 255, 255, 0.6),
-    0 2px 4px rgba(0, 0, 0, 0.2);
+    0 0 15px rgba(255, 255, 255, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .btn:disabled {

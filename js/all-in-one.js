@@ -350,6 +350,9 @@ function initTabs() {
   });
 }
 
+// ==================== API 配置 ====================
+const API_BASE_URL = 'http://127.0.0.1:5002';
+
 // ==================== 表单处理 ====================
 function initForms() {
   // 诊断预测
@@ -357,43 +360,122 @@ function initForms() {
   const diagnosisSaveBtn = document.getElementById('diagnosisSaveBtn');
   const diagnosisResult = document.getElementById('diagnosisResult');
   const diagnosisResultContent = document.getElementById('diagnosisResultContent');
+  
+  // 存储最新的诊断结果
+  let latestDiagnosisResult = null;
+  let latestDiagnosisFeatures = null;
 
   if (diagnosisUploadBtn) {
-    diagnosisUploadBtn.addEventListener('click', () => {
+    diagnosisUploadBtn.addEventListener('click', async () => {
       const form = document.getElementById('diagnosisForm');
       if (form.checkValidity()) {
         // 显示加载动画
         const loader = new LoadingSpinner();
         loader.show();
 
-        // 模拟预测延迟
-        setTimeout(() => {
+        try {
+          // 获取表单数据
+          const formData = new FormData(form);
+          const features = [
+            parseFloat(formData.get('tumorThickness') || 0),
+            parseFloat(formData.get('cellSizeUniformity') || 0),
+            parseFloat(formData.get('cellShapeUniformity') || 0),
+            parseFloat(formData.get('marginalAdhesion') || 0),
+            parseFloat(formData.get('epithelialCellSize') || 0),
+            parseFloat(formData.get('bareNuclei') || 0),
+            parseFloat(formData.get('blandChromatin') || 0),
+            parseFloat(formData.get('normalNucleoli') || 0),
+            parseFloat(formData.get('mitoses') || 0)
+          ];
+
+          // 调用后端API
+          const response = await fetch(`${API_BASE_URL}/api/diagnose`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ features })
+          });
+
+          const result = await response.json();
           loader.hide();
 
-          // 生成随机预测结果
-          const isMalignant = Math.random() > 0.5;
-          const probability = (Math.random() * 40 + 60).toFixed(1);
+          if (result.success) {
+            // 保存结果数据供下载使用
+            latestDiagnosisResult = result;
+            latestDiagnosisFeatures = features;
+            
+            // 显示诊断结果
+            const isMalignant = result.diagnosis === '恶性';
+            
+            let abnormalFeaturesHtml = '';
+            if (result.abnormal_features && result.abnormal_features.length > 0) {
+              abnormalFeaturesHtml = `
+                <div class="result-item abnormal-features">
+                  <div class="result-label">异常特征：</div>
+                  <div class="result-value">
+                    ${result.abnormal_features.map(f => 
+                      `<span class="feature-tag">${f.name}: ${f.value}</span>`
+                    ).join(' ')}
+                  </div>
+                </div>
+              `;
+            }
 
-          diagnosisResultContent.innerHTML = `
-            <div class="result-item">
-              <div class="result-label">诊断结果：</div>
-              <div class="result-value ${isMalignant ? 'malignant' : 'benign'}">
-                ${isMalignant ? '恶性' : '良性'}
+            diagnosisResultContent.innerHTML = `
+              <div class="result-item">
+                <div class="result-label">诊断结果：</div>
+                <div class="result-value ${isMalignant ? 'malignant' : 'benign'}">
+                  ${result.diagnosis}
+                </div>
               </div>
-            </div>
-            <div class="result-item">
-              <div class="result-label">置信度：</div>
-              <div class="result-value probability-value">${probability}%</div>
-            </div>
-          `;
+              <div class="result-item">
+                <div class="result-label">置信度：</div>
+                <div class="result-value probability-value">${result.confidence.toFixed(2)}%</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">风险等级：</div>
+                <div class="result-value" style="color: ${result.risk_color};">
+                  ${result.risk_level}
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">风险评分：</div>
+                <div class="result-value risk-score">${result.risk_score.toFixed(2)}%</div>
+              </div>
+              ${abnormalFeaturesHtml}
+              <div class="result-item recommendation">
+                <div class="result-label">建议：</div>
+                <div class="result-value">${result.recommendation}</div>
+              </div>
+              <div class="result-item timestamp">
+                <small>诊断时间: ${result.timestamp}</small>
+              </div>
+            `;
 
-          diagnosisResult.style.display = 'block';
-          diagnosisSaveBtn.disabled = false;
+            diagnosisResult.style.display = 'block';
+            diagnosisSaveBtn.disabled = false;
 
-          // 数字递增动画
-          const probElement = diagnosisResultContent.querySelector('.probability-value');
-          animateNumber(probElement, 0, parseFloat(probability), 1500, 1);
-        }, 1500);
+            // 数字递增动画
+            const probElement = diagnosisResultContent.querySelector('.probability-value');
+            const riskElement = diagnosisResultContent.querySelector('.risk-score');
+            animateNumber(probElement, 0, result.confidence, 1500, 2);
+            animateNumber(riskElement, 0, result.risk_score, 1500, 2);
+
+            // 滚动到结果区域
+            diagnosisResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+          } else {
+            // 显示错误信息
+            alert(`诊断失败: ${result.error}`);
+          }
+
+        } catch (error) {
+          loader.hide();
+          console.error('API调用失败:', error);
+          alert('无法连接到服务器，请确保后端服务已启动！\n\n启动方法：\ncd server\npython3 app.py');
+        }
+
       } else {
         alert('请填写所有必填项');
         form.reportValidity();
@@ -403,7 +485,89 @@ function initForms() {
 
   if (diagnosisSaveBtn) {
     diagnosisSaveBtn.addEventListener('click', () => {
-      alert('诊断结果已保存！');
+      if (!latestDiagnosisResult || !latestDiagnosisFeatures) {
+        alert('没有可保存的诊断结果');
+        return;
+      }
+      
+      // 生成TXT文件内容
+      const featureNames = [
+        '肿瘤厚度', '细胞大小均匀性', '细胞形状均匀性',
+        '边缘粘附力', '单上皮细胞大小', '裸核',
+        '染色质的颜色', '核仁正常情况', '有丝分裂情况'
+      ];
+      
+      let txtContent = '========================================\n';
+      txtContent += '      乳腺癌诊断预测报告\n';
+      txtContent += '========================================\n\n';
+      
+      txtContent += '诊断时间: ' + latestDiagnosisResult.timestamp + '\n\n';
+      
+      txtContent += '----------------------------------------\n';
+      txtContent += '输入的特征参数:\n';
+      txtContent += '----------------------------------------\n';
+      latestDiagnosisFeatures.forEach((value, index) => {
+        txtContent += `${featureNames[index]}: ${value}\n`;
+      });
+      
+      txtContent += '\n========================================\n';
+      txtContent += '诊断结果:\n';
+      txtContent += '========================================\n';
+      txtContent += `诊断结论: ${latestDiagnosisResult.diagnosis}\n`;
+      txtContent += `置信度: ${latestDiagnosisResult.confidence.toFixed(2)}%\n`;
+      txtContent += `风险等级: ${latestDiagnosisResult.risk_level}\n`;
+      txtContent += `风险评分: ${latestDiagnosisResult.risk_score.toFixed(2)}%\n\n`;
+      
+      if (latestDiagnosisResult.probabilities) {
+        txtContent += '----------------------------------------\n';
+        txtContent += '详细概率:\n';
+        txtContent += '----------------------------------------\n';
+        txtContent += `良性概率: ${latestDiagnosisResult.probabilities['良性'].toFixed(2)}%\n`;
+        txtContent += `恶性概率: ${latestDiagnosisResult.probabilities['恶性'].toFixed(2)}%\n\n`;
+      }
+      
+      if (latestDiagnosisResult.abnormal_features && latestDiagnosisResult.abnormal_features.length > 0) {
+        txtContent += '----------------------------------------\n';
+        txtContent += '异常特征:\n';
+        txtContent += '----------------------------------------\n';
+        latestDiagnosisResult.abnormal_features.forEach(feature => {
+          txtContent += `${feature.name}: ${feature.value}\n`;
+        });
+        txtContent += '\n';
+      }
+      
+      txtContent += '----------------------------------------\n';
+      txtContent += '医学建议:\n';
+      txtContent += '----------------------------------------\n';
+      txtContent += latestDiagnosisResult.recommendation + '\n\n';
+      
+      txtContent += '========================================\n';
+      txtContent += '重要提示:\n';
+      txtContent += '========================================\n';
+      txtContent += '本报告由AI辅助诊断系统生成，仅供医疗参考。\n';
+      txtContent += '最终诊断结果应由专业医师综合判断后做出。\n';
+      txtContent += '========================================\n';
+      
+      // 创建Blob对象
+      const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
+      
+      // 创建下载链接
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      
+      // 生成文件名（使用时间戳）
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+      link.download = `乳腺癌诊断报告_${timestamp}.txt`;
+      
+      // 触发下载
+      document.body.appendChild(link);
+      link.click();
+      
+      // 清理
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+      
+      alert('诊断报告已下载为TXT文件！');
     });
   }
 
