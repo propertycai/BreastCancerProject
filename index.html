@@ -24,6 +24,7 @@
         <button class="tab-button active" data-tab="intro">系统简介</button>
         <button class="tab-button" data-tab="diagnosis">乳腺癌诊断预测</button>
         <button class="tab-button" data-tab="survival">乳腺癌生存预测</button>
+        <button class="tab-button" data-tab="ai-chat">AI问答小助手</button>
         <button class="tab-button" data-tab="team">开发团队介绍</button>
       </nav>
 
@@ -281,6 +282,39 @@
             </button>
           </div>
         </form>
+      </section>
+
+      <!-- AI问答小助手 -->
+      <section id="ai-chat" class="tab-content">
+        <h2>AI问答小助手</h2>
+        <p class="section-desc">您可以向我咨询乳腺癌相关的医学问题</p>
+        
+        <div class="chat-container">
+          <!-- 聊天消息区域 -->
+          <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+              <div class="message-avatar">🤖</div>
+              <div class="message-content">
+                <div class="message-text">您好！我是AI问答小助手，很高兴为您服务。您可以向我咨询乳腺癌相关的医学问题，例如：症状、诊断、治疗方法、预防措施等。</div>
+                <div class="message-time">刚刚</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 快捷问题按钮 -->
+          <div class="quick-questions">
+            <button class="quick-btn" data-question="乳腺癌有哪些常见症状？">常见症状</button>
+            <button class="quick-btn" data-question="如何进行乳腺癌筛查？">筛查方法</button>
+            <button class="quick-btn" data-question="乳腺癌的治疗方法有哪些？">治疗方法</button>
+            <button class="quick-btn" data-question="如何预防乳腺癌？">预防措施</button>
+          </div>
+          
+          <!-- 输入区域 -->
+          <div class="chat-input-wrapper">
+            <input type="text" id="chatInput" class="chat-input" placeholder="请输入您的问题..." />
+            <button id="chatSendBtn" class="chat-send-btn">发送</button>
+          </div>
+        </div>
       </section>
 
       <!-- 开发团队介绍 -->
